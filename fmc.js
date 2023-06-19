@@ -3,8 +3,12 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const bodyParser = require('body-parser')
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+
+
+
 
 const DB = "mongodb+srv://fmcAdmin:fmcAdmin@fmc-cluster.ccxjriq.mongodb.net/fmcDB?retryWrites=true&w=majority"
 mongoose.connect(DB).then(function(){console.log("Connected to MongoDB Atlas")}).catch(function(err){console.log(err)});
@@ -31,7 +35,7 @@ const dataSchema = mongoose.Schema({
     fullName: String,
     address: String,
     contactNumber: Number,
-    state: String,
+    // state: String,
 
     name: {
         type: String,
@@ -58,11 +62,13 @@ app.get('/', function(req, res){
 
 app.post('/', upload.single('image'), function(req, res){
 
+    // console.log(req.file)
+
     const child = new Child({
         fullName: req.body.fullName,
         address: req.body.address,
         contactNumber: req.body.contactNumber,
-        state: req.body.state,
+        // state: req.body.state,
         name: req.body.image,
         image: {
             data: fs.readFileSync('images/' + req.file.filename),
@@ -75,7 +81,8 @@ app.post('/', upload.single('image'), function(req, res){
     .catch((res) => {console.log(`Failed to save image ${res}`)})
 
 
-    res.send("image uploaded!")
+    // res.write("image uploaded!")
+    res.redirect("http://192.168.0.72:3000/add")
 });
 
 
